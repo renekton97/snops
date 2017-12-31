@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="scene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="768.0" minWidth="1024.0" prefHeight="768.0" prefWidth="1024.0" style="-fx-background-color: #4caf50;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <top>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+            <ImageView fx:id="computer_card1" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../res/BC.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="computer_card2" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../res/BC.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="computer_card3" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../res/BC.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="computer_card4" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../res/BC.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="computer_card5" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+               <image>
+                  <Image url="@../res/BC.png" />
+               </image>
+            </ImageView>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+            <ImageView fx:id="computer_deck" fitHeight="200.0" fitWidth="130.0" layoutX="725.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+            </ImageView>
+            <Region layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+         <BorderPane.margin>
+            <Insets top="15.0" />
+         </BorderPane.margin>
+      </HBox>
+   </top>
+   <bottom>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+            <ImageView fx:id="player_card1" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+               <effect>
+                  <DropShadow color="#00000099" spread="0.05" />
+               </effect>
+            </ImageView>
+            <ImageView fx:id="player_card2" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+            </ImageView>
+            <ImageView fx:id="player_card3" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+            </ImageView>
+            <ImageView fx:id="player_card4" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+            </ImageView>
+            <ImageView fx:id="player_card5" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+            </ImageView>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+            <ImageView fx:id="player_deck" fitHeight="200.0" fitWidth="130.0" layoutX="725.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <HBox.margin>
+                  <Insets left="5.0" right="5.0" />
+               </HBox.margin>
+            </ImageView>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+         </children>
+         <padding>
+            <Insets bottom="15.0" />
+         </padding>
+      </HBox>
+   </bottom>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" />
+                  <ImageView fx:id="played_card1" fitHeight="200.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin>
+                  </ImageView>
+                  <ImageView fx:id="played_card2" fitHeight="200.0" fitWidth="130.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin>
+                  </ImageView>
+                  <ImageView fx:id="trump_card" fitHeight="200.0" fitWidth="130.0" layoutX="140.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+                     <HBox.margin>
+                        <Insets left="155.0" />
+                     </HBox.margin>
+                  </ImageView>
+                  <ImageView fx:id="deck_of_cards" fitHeight="200.0" fitWidth="130.0" layoutX="270.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <HBox.margin>
+                        <Insets left="-60.0" right="5.0" />
+                     </HBox.margin>
+                     <image>
+                        <Image url="@../res/BC.png" />
+                     </image>
+                  </ImageView>
+                  <Region prefHeight="200.0" prefWidth="200.0" />
+               </children>
+            </HBox>
+            <Region prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </VBox>
+   </center>
+   <right>
+      <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </right>
+</BorderPane>
