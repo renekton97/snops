@@ -1,6 +1,7 @@
 package sample;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Player {
 
@@ -9,12 +10,18 @@ public class Player {
     int points=0;
     boolean player_turn;
 
+    //setteri
     public void setHandCards(ArrayList<Card> handCards) {
         this.handCards = handCards;
     }
 
     public void addCard(Card card){
         handCards.add(card);
+    }
+
+    public void addDeckCard(Card card){
+        deckCards.add(card);
+        points=points+card.getRank().getRankValue();
     }
 
     public void setDeckCards(ArrayList<Card> deckCards) {
@@ -29,6 +36,7 @@ public class Player {
         this.player_turn = player_turn;
     }
 
+    //getteri
     public ArrayList<Card> getHandCards() {
         return handCards;
     }
