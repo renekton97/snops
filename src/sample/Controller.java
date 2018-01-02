@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 
 
-public class Controller implements Runnable {
+public class Controller{
 
     @FXML
     private ImageView computer_card1;
@@ -59,46 +59,42 @@ public class Controller implements Runnable {
     boolean canSetCard=false;
     int selectedCard;
 
-    Player player;
     Game game;
 
     @FXML
     public void initialize() {
 
         game=new Game(this);
-        Thread thread=new Thread(game);
-        thread.start();
-        Thread thread2=new Thread(this);
-        thread2.start();
-
+        game.start();
     };
 
-    Card playedCard;
-
-    public Card getPlayedCard() {
-        return playedCard;
-    }
 
     //action listenerr for first card
     public void playCard1() {
-        if(player.isPlayer_turn()==true){
-            game.setPlayerCard(player.getHandCards().get(0));
-        }
+        game.play(0);
     }
 
     public void playCard2() {
-
+        game.play(1);
     }
 
     public void playCard3() {
-
+        game.play(2);
     }
 
     public void playCard4() {
-
+        game.play(3);
     }
 
     public void playCard5() {
+        game.play(4);
+    }
+
+    public void playButton(){
+        game.getPlayedCard().add(game.player2.play());
+        game.player2.setPlayer_turn(true);
+        game.player.setPlayer_turn(false);
+        game.updateGUI();
 
     }
 
@@ -163,10 +159,6 @@ public class Controller implements Runnable {
         return deck_of_cards;
     }
 
-    @Override
-    public void run() {
-
-    }
 }
 
 

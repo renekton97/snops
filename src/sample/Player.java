@@ -19,9 +19,18 @@ public class Player {
         handCards.add(card);
     }
 
+
     public void addDeckCard(Card card){
         deckCards.add(card);
         points=points+card.getRank().getRankValue();
+    }
+
+    public Card takeCard(int i){
+        Card card;
+        card=handCards.get(i);
+        handCards.remove(i);
+        handCards.trimToSize();
+        return card;
     }
 
     public void setDeckCards(ArrayList<Card> deckCards) {

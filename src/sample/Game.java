@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Game implements Runnable{
+public class Game{
 
     Player player;//our player
     Computer player2;//computer player, for now just returns random card
@@ -13,16 +13,10 @@ public class Game implements Runnable{
     Controller controller;//GUI
     ArrayList<Card> playedCard=new ArrayList<>();//cards that are on table and are currently player
     Card trump;
-    Card playerCard;//card of our player, us...
 
 
     public Game(Controller controller) {
         this.controller = controller;
-    }
-
-    //function that sets player card
-    public void setPlayerCard(Card playerCard) {
-        this.playerCard = playerCard;
     }
 
 
@@ -36,8 +30,52 @@ public class Game implements Runnable{
         deck.shuffle();
         firstDeal();
         updateGUI();
-        randomStart();
         playGame();
+    }
+
+    public void play(int i) {
+        //Computer plays this
+        if(player2.isPlayer_turn()==true){
+            playedCard.add(player.takeCard(i));
+            compareCards();
+
+            if(!deck.getDeckOfCards().isEmpty()) {
+                cardDeal();
+            }
+            updateGUI();//updates deck after turn is played
+
+
+            if(player2.isPlayer_turn()==true) {
+                getPlayedCard().add(player2.play());
+                updateGUI();//updates played card from Player 2
+            }
+
+        }else if(player.isPlayer_turn()==true){
+            //I play this turn
+            System.out.println("My turn");
+            playedCard.add(player.takeCard(i));
+            System.out.println("My played cards is: "+playedCard.get(0).toString());
+            updateGUI();//doesen't work
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            playedCard.add(player2.play());
+            compareCards();
+            getPlayedCard().clear();
+
+            if(!deck.getDeckOfCards().isEmpty()) {
+                cardDeal();
+            }
+
+            updateGUI();//updates deck after turn is played
+
+            if(player2.isPlayer_turn()==true){
+                getPlayedCard().add(player2.play());
+                updateGUI();//updates played card from Player 2
+            }
+        }
 
     }
 
@@ -64,107 +102,9 @@ public class Game implements Runnable{
         player2.addCard(card);
     }
 
-    public synchronized void playGame(){
-        int i=0;
-        boolean play=true;
-        boolean hasEnoughPoints=false;
-        boolean cardsEmpty=false;
-
-        do{
-            i++;
-            System.out.println("Turn"+i);
-            playTurn();
-            compareCards();
-            updateGUI();
-            if(deck.getDeckOfCards().size()!=0) {
-                cardDeal();
-            }
-            updateGUI();
-            System.out.println("P1: "+player.getPoints());
-            System.out.println("P2: "+player2.getPoints());
-
-            if(player.getPoints()>66 || player2.getPoints()>66){
-                hasEnoughPoints=true;
-
-            }
-
-            if(player.getHandCards().size()==0 && player2.getHandCards().size()==0){
-                cardsEmpty=true;
-            }
-
-            if(hasEnoughPoints==true || cardsEmpty==true){
-                play=false;
-            }
-
-        }while(play==true);
+    public void playGame(){
 
         System.out.println("GAME OVER");
-    }
-    public void randomStart(){
-        Random random = new Random();
-        int rand = random.nextInt(2);
-        System.out.println(rand);
-
-        if(rand==0){
-            player.setPlayer_turn(true);
-            player2.setPlayer_turn(false);
-        }
-        if(rand==1){
-            player2.setPlayer_turn(true);
-            player.setPlayer_turn(false);
-        }
-    }
-
-    public synchronized void playTurn(){
-
-        if(player.isPlayer_turn()==true){
-            System.out.println("Player round");
-            //playedCard.add(playerCard);
-            //THIS IS WHERE PLAYER SHOULD PLAY THEIR CARD with playedCard.add(....)
-            updateGUI();
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            updateGUI();
-            playedCard.add(player2.play());
-            updateGUI();
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            updateGUI();
-        }
-        if(player2.isPlayer_turn()==true){
-            System.out.println("Player 2 round");
-            playedCard.add(player2.play());
-            updateGUI();
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            updateGUI();
-
-            playedCard.add(player2.play());
-
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            playedCard.add(playerCard);
-            updateGUI();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            updateGUI();
-        }
     }
 
 
@@ -178,8 +118,6 @@ public class Game implements Runnable{
         cardOneRank=playedCard.get(0).getRank().getRankValue();
         cardTwoRank=playedCard.get(1).getRank().getRankValue();
         trumpSuit=trump.getSuit().getSuitText();
-        System.out.println("Player turn: "+player.isPlayer_turn());
-        System.out.println("Player2 turn: "+player2.isPlayer_turn());
 
         boolean player1Turn=false;
         boolean player2Turn=false;
@@ -189,18 +127,18 @@ public class Game implements Runnable{
         if(cardTwoSuit==cardOneSuit && cardTwoRank>cardOneRank || cardTwoSuit==trumpSuit){
             //if second card won and player wasn't on turn he won, that means his card was winning
             if(player.isPlayer_turn()==false){
-                System.out.println("Player 1 wins");
                 for(int i=0;i<2;i++) {
                     player.addDeckCard(playedCard.get(i));
                 }
+                System.out.println("I win");
                 playedCard.clear();
                 player1Turn=true;
                 player2Turn=false;
             }
             if(player2.isPlayer_turn()==false){
-                System.out.println("Player 2 wins");
                 for(int i=0;i<2;i++) {
                     player2.addDeckCard(playedCard.get(i));
+                    System.out.println("Player 2 wins");
                 }
                 playedCard.clear();
                 player1Turn=false;
@@ -208,19 +146,19 @@ public class Game implements Runnable{
             }
         }else{
             if(player.isPlayer_turn()==true){
-                System.out.println("Player 1 wins");
                 for(int i=0;i<2;i++) {
                     player.addDeckCard(playedCard.get(i));
+                    System.out.println("I win");
                 }
                 playedCard.clear();
                 player1Turn=true;
                 player2Turn=false;
             }
             if(player2.isPlayer_turn()==true){
-                System.out.println("Player 2 wins");
                 for(int i=0;i<2;i++) {
                     player2.addDeckCard(playedCard.get(i));
                 }
+                System.out.println("Player 2 wins");
                 playedCard.clear();
                 player1Turn=false;
                 player2Turn=true;
@@ -265,14 +203,17 @@ public class Game implements Runnable{
         if(player2.handCards.size()<1)controller.getComputer_card1().setVisible(false);
         //GUI za igrane karte,trumpa in deck
         //GUI for cards on the table, played cards...
+
+        //updates playedCard
         if(!playedCard.isEmpty()){
             controller.getPlayed_card1().setImage(new Image("/res/"+playedCard.get(0).toString()+".png"));
             controller.getPlayed_card1().setVisible(true);
         }else{controller.getPlayed_card1().setVisible(false);}
         if(playedCard.size()==2){
-            controller.getPlayed_card2().setImage(new Image("/res/"+playedCard.get(1).toString()+".png"));
             controller.getPlayed_card2().setVisible(true);
+            controller.getPlayed_card2().setImage(new Image("/res/"+playedCard.get(1).toString()+".png"));
         }else{controller.getPlayed_card2().setVisible(false);}
+
         if(!deck.deckOfCards.isEmpty()){
             controller.getTrump_card().setImage(new Image("/res/"+deck.deckOfCards.get(deck.getDeckOfCards().size()-1).toString()+".png"));
             controller.getTrump_card().setVisible(true);
@@ -281,8 +222,7 @@ public class Game implements Runnable{
             controller.getDeck_of_cards().setVisible(false);}
     }
 
-    @Override
-    public void run() {
-        start();
+    public ArrayList<Card> getPlayedCard() {
+        return playedCard;
     }
 }
