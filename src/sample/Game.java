@@ -139,7 +139,6 @@ public class Game{
         boolean player2Turn=false;
 
         //2nd cards plays the player who is not on the turn and first card is played by the player
-        //Drugo karto odigra tisti ki ni na turnu, če se druga karta ni zmagovalna se gleda else, prva karta je od tistega ki je bil na turnu
         if(cardTwoSuit==cardOneSuit && cardTwoRank>cardOneRank || cardTwoSuit==trumpSuit){
             //if second card won and player wasn't on turn he won, that means his card was winning
             if(player.isPlayer_turn()==false){
@@ -190,7 +189,6 @@ public class Game{
     }
 
     public synchronized void updateGUI(){
-        //GUI za prikaz igralčevih kart
         //GUI interface to show player cards
         if(player.getHandCards().size()>0){
             controller.getPlayer_card1().setImage(new Image("/res/"+player.getHandCards().get(0).toString()+".png"));
@@ -212,7 +210,7 @@ public class Game{
             controller.getPlayer_card5().setImage(new Image("/res/"+player.getHandCards().get(4).toString()+".png"));
             controller.getPlayer_card5().setVisible(true);
         }else{controller.getPlayer_card5().setVisible(false);}
-        //GUI za nasprotnikove karte
+
         //Gui for enemies cards, shows cards based on his number
         if(player2.handCards.size()<5)controller.getComputer_card5().setVisible(false);
         if(player2.handCards.size()==5)controller.getComputer_card5().setVisible(true);
@@ -224,9 +222,8 @@ public class Game{
         if(player2.handCards.size()==2)controller.getComputer_card2().setVisible(true);
         if(player2.handCards.size()<1)controller.getComputer_card1().setVisible(false);
         if(player2.handCards.size()==1)controller.getComputer_card1().setVisible(true);
-        //GUI za igrane karte,trumpa in deck
-        //GUI for cards on the table, played cards...
 
+        //GUI for cards on the table, played cards...
         //updates playedCard
         if(!playedCard.isEmpty()){
             controller.getPlayed_card1().setImage(new Image("/res/"+playedCard.get(0).toString()+".png"));

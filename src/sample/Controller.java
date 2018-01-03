@@ -1,14 +1,7 @@
 package sample;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
-import javafx.animation.PauseTransition;
-
-import java.awt.*;
-import java.util.ArrayList;
-
 
 public class Controller{
 
@@ -77,9 +70,8 @@ public class Controller{
         game.start();
     };
 
-
     //action listenerr for first card
-    public void playCard1() {
+    public void playCard1(){
         if(game.getCanPlay()==true)game.play(0);
 
     }

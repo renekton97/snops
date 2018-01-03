@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -77,9 +76,6 @@
                <HBox.margin>
                   <Insets left="5.0" right="5.0" />
                </HBox.margin>
-               <effect>
-                  <DropShadow color="#00000099" spread="0.05" />
-               </effect>
             </ImageView>
             <ImageView fx:id="player_card2" fitHeight="200.0" fitWidth="130.0" onMouseClicked="#playCard2" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
