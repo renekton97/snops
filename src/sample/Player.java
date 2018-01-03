@@ -23,6 +23,7 @@ public class Player {
     public void addDeckCard(Card card){
         deckCards.add(card);
         points=points+card.getRank().getRankValue();
+        System.out.println("Card has value of "+card.getRank().getRankValue());
     }
 
     public Card takeCard(int i){

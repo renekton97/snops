@@ -1,13 +1,18 @@
 package sample;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
+import javafx.animation.PauseTransition;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 
 public class Controller{
 
+    public Label player_points;
     @FXML
     private ImageView computer_card1;
 
@@ -56,6 +61,10 @@ public class Controller{
     @FXML
     private ImageView deck_of_cards;
 
+
+
+
+
     boolean canSetCard=false;
     int selectedCard;
 
@@ -71,24 +80,26 @@ public class Controller{
 
     //action listenerr for first card
     public void playCard1() {
-        game.play(0);
+        if(game.getCanPlay()==true)game.play(0);
+
     }
 
     public void playCard2() {
-        game.play(1);
+        if(game.getCanPlay()==true)game.play(1);
     }
 
     public void playCard3() {
-        game.play(2);
+        if(game.getCanPlay()==true)game.play(2);
     }
 
     public void playCard4() {
-        game.play(3);
+        if(game.getCanPlay()==true)game.play(3);
     }
 
     public void playCard5() {
-        game.play(4);
+        if(game.getCanPlay()==true)game.play(4);
     }
+
 
     public void playButton(){
         game.getPlayedCard().add(game.player2.play());
@@ -159,6 +170,9 @@ public class Controller{
         return deck_of_cards;
     }
 
+    public Label getPlayer_points() {
+        return player_points;
+    }
 }
 
 

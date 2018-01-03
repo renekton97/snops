@@ -20,7 +20,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("visual.fxml"));
         Parent root = (Parent) loader.load();
         ctrl = loader.getController();
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("World of Snopscraft");
         primaryStage.setScene(new Scene(root, 1024, 768));
         primaryStage.show();
     }
