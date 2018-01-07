@@ -8,6 +8,8 @@ public class Player {
     ArrayList<Card> handCards=new ArrayList<>();
     ArrayList<Card> deckCards=new ArrayList<>();
     int points=0;
+    int gamePoints=0;
+    int gameWon=0;
     boolean player_turn;
 
     //setteri
@@ -23,6 +25,7 @@ public class Player {
     public void addDeckCard(Card card){
         deckCards.add(card);
         points=points+card.getRank().getRankValue();
+        System.out.println("Card has suit "+card.getSuit().getSuitText());
         System.out.println("Card has value of "+card.getRank().getRankValue());
     }
 
@@ -46,6 +49,14 @@ public class Player {
         this.player_turn = player_turn;
     }
 
+    public void setGamePoints(int gamePoints) {
+        this.gamePoints = gamePoints;
+    }
+
+    public void setGameWon(int gameWon) {
+        this.gameWon = gameWon;
+    }
+
     //getteri
     public ArrayList<Card> getHandCards() {
         return handCards;
@@ -61,5 +72,13 @@ public class Player {
 
     public boolean isPlayer_turn() {
         return player_turn;
+    }
+
+    public int getGamePoints() {
+        return gamePoints;
+    }
+
+    public int getGameWon() {
+        return gameWon;
     }
 }

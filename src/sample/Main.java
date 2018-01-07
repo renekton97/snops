@@ -23,6 +23,8 @@ public class Main extends Application {
         primaryStage.setTitle("World of Snopscraft");
         primaryStage.setScene(new Scene(root, 1024, 768));
         primaryStage.show();
+
+        ctrl.setPrimaryStage(primaryStage);
     }
 
     public static void main(String[] args) {

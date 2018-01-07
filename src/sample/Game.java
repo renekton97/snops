@@ -17,22 +17,33 @@ public class Game{
     Card trump;
     Boolean canPlay=false;
     PauseTransition pause;
+    int player1GamePoints,player2GamePoints;
 
 
     public Game(Controller controller) {
+        player=new Player();
+        player2=new Computer();
+        deck=new Deck();
         pause=new PauseTransition(Duration.seconds(3));
         this.controller = controller;
     }
 
 
     public void start(){
-        player=new Player();
-        player2=new Computer();
-        deck=new Deck();
 
+        deck.getDeckOfCards().clear();//clears deck if there is new round
+        player.getHandCards().clear();//clears deck if there is new round
+        player2.getHandCards().clear();//clears deck if there is new round
+        player.getDeckCards().clear();//clears deck if there is new round
+        player2.getDeckCards().clear();//clears deck if there is new round
+        player.setPoints(0);
+        player2.setPoints(0);
         deck.populate();
         deck.shuffle();
         firstDeal();
+        System.out.println("Deck size: "+deck.getDeckOfCards().size());
+        playedCard.clear();
+        player.setPoints(0);
 
         getPlayedCard().add(player2.play());
         player2.setPlayer_turn(true);
@@ -79,47 +90,74 @@ public class Game{
             playedCard.add(player.takeCard(i));
             canPlay=false;
             updateGUI();
-
-            System.out.println("FIRST");
-
-            pause.setOnFinished(event -> {
-                compareCards();
-                cardDeal();
-                if(player2.isPlayer_turn()==true){
-                    if(player.getPoints()<66 && player2.getPoints()<66){
-                        if(player.getHandCards().size()>0 && player2.getHandCards().size()>0){
-                            playedCard.add(player2.play());
-                            canPlay=true;
-                        }else{System.out.println("Not enough cards");}
-                    }else{System.out.println("Max points have been reached");}
-                }
-                updateGUI();
-            });
-
-            pause.play();
+            secondPlay();
         }else{
             System.out.println("SECOND");
             playedCard.add(player.takeCard(i));
             playedCard.add(player2.play());
             canPlay=false;
             updateGUI();
-            pause.setOnFinished(event -> {
+            secondPlay();
 
-                compareCards();
+        }
+    }
+
+    public void secondPlay(){
+        pause.setOnFinished(event -> {
+            compareCards();
+            if(player.getPoints()>=20){
+                System.out.println("ENOUGH POINTS");
+                addPlayerGamePoints();
+                start();//restarts the game once player has enough cards
+            }else{
                 cardDeal();
-                if(player2.isPlayer_turn()==true){
-                    if(player2.isPlayer_turn()==true){
-                        if(player.getPoints()<66 && player2.getPoints()<66){
-                            if(player.getHandCards().size()>0 && player2.getHandCards().size()>0){
-                                playedCard.add(player2.play());
-                                canPlay=true;
-                            }else{System.out.println("Not enough cards");}
-                        }else{System.out.println("Max points have been reached");}
-                    };
+                if (player2.isPlayer_turn() == true) {
+                    if (player2.getHandCards().size() > 0 && player2.getPoints()<66) {
+                        playedCard.add(player2.play());
+                        canPlay = true;
+                    } else {
+                        System.out.println("PLAYER 2 CAN'T PLAY");
+                        addPlayerGamePoints();
+                        start();//restarts the game once player has enough cards
+                    }
                 }
                 updateGUI();
-            });
-            pause.play();
+            }
+        });
+        pause.play();
+    }
+
+    public void addPlayerGamePoints() {
+        int i=player.getGamePoints();
+        if (player2.getPoints() >= 33) {
+           i = i + 1;
+        } else if (player2GamePoints < 33 && player2.getPoints() > 0) {
+            i = i + 2;
+        } else if (player2GamePoints == 0) {
+            i = i + 3;
+        }
+        player.setGamePoints(i);
+        controller.getPlayer_points().setText("Points "+player.getGamePoints());//Updates GUI with player points
+        if(player.getGamePoints()>=7){
+            player.setGamePoints(0);//if player has enough points, it reset game points back to 0
+            controller.getPlayer_points().setText("Points "+player.getGamePoints());//Updates GUI with player points
+            player.setGameWon(player.getGameWon()+1);//adds one game win
+            controller.getPlayer_win().setText("Win "+player.getGameWon());//Updates GUI with player wins
+        }
+
+    }
+
+    public void addPlayer2GamePoints() {
+        if (player.getPoints() >= 33) {
+            player2GamePoints = player2GamePoints + 1;
+        } else if (player.getPoints() < 33 && player.getPoints() > 0) {
+            player2GamePoints = player2GamePoints + 2;
+        } else if (player.getPoints() == 0) {
+            player2GamePoints = player2GamePoints + 3;
+        }
+
+        if(player2.getGamePoints()>=7){
+            player2.setGameWon(player2.getGamePoints()+1);
         }
     }
 
@@ -135,13 +173,13 @@ public class Game{
         cardTwoRank=playedCard.get(1).getRank().getRankValue();
         trumpSuit=trump.getSuit().getSuitText();
 
-        boolean player1Turn=false;
+        boolean player1Turn=false;//sets later player turn
         boolean player2Turn=false;
 
         //2nd cards plays the player who is not on the turn and first card is played by the player
         if(cardTwoSuit==cardOneSuit && cardTwoRank>cardOneRank || cardTwoSuit==trumpSuit){
             //if second card won and player wasn't on turn he won, that means his card was winning
-            if(player.isPlayer_turn()==false){
+            if(player.isPlayer_turn()==false){//if player was not on turn that means second card was his
                 for(int i=0;i<2;i++) {
                     player.addDeckCard(playedCard.get(i));
                 }
@@ -161,7 +199,7 @@ public class Game{
                 player2Turn=true;
             }
         }else{
-            if(player.isPlayer_turn()==true){
+            if(player.isPlayer_turn()==true){//if second card didn't win and player was on turn and played first card,he wins
                 for(int i=0;i<2;i++) {
                     player.addDeckCard(playedCard.get(i));
                     System.out.println("Player 1 wins");
@@ -240,8 +278,6 @@ public class Game{
         }else{
             controller.getTrump_card().setVisible(false);
             controller.getDeck_of_cards().setVisible(false);}
-
-            controller.getPlayer_points().setText("Points: "+player.getPoints());
     }
 
     public ArrayList<Card> getPlayedCard() {

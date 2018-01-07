@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -150,10 +151,43 @@
    <right>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox prefHeight="338.0" prefWidth="168.0">
+            <VBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="338.0" prefWidth="252.0" style="-fx-background-color: #43a047;">
                <children>
-                  <Region prefHeight="307.0" prefWidth="138.0" />
-                  <Label fx:id="player_points" prefHeight="64.0" prefWidth="160.0" text="Points" textFill="WHITE">
+                  <Region prefHeight="180.0" prefWidth="182.0" />
+                  <Label fx:id="player2_label" prefHeight="17.0" prefWidth="152.0" text="Player 2" textFill="WHITE">
+                     <font>
+                        <Font name="Century Gothic" size="18.0" />
+                     </font>
+                  </Label>
+                  <Separator prefWidth="200.0" />
+                  <Label fx:id="player2_points" text="Points" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="player2_win" text="Win" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="player_label" prefHeight="52.0" prefWidth="152.0" text="Player" textFill="#f5f5f5">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Separator prefWidth="200.0" />
+                  <Label fx:id="player_points" text="Points" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="player_win" text="Win" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Region prefHeight="200.0" prefWidth="200.0" />
+                  <Label fx:id="points_label" prefHeight="64.0" prefWidth="160.0" text="Points" textFill="WHITE">
                      <VBox.margin>
                         <Insets bottom="10.0" />
                      </VBox.margin>
@@ -162,8 +196,16 @@
                      </font>
                   </Label>
                </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="15.0" right="15.0" />
+               </padding>
+               <HBox.margin>
+                  <Insets bottom="20.0" right="15.0" top="20.0" />
+               </HBox.margin>
             </VBox>
-            <Region prefHeight="338.0" prefWidth="84.0" />
          </children>
       </HBox>
    </right>
