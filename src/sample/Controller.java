@@ -66,12 +66,6 @@ public class Controller{
 
     @FXML
     private ImageView deck_of_cards;
-    
-    
-
-
-
-
 
     boolean canSetCard=false;
     int selectedCard;
@@ -103,34 +97,28 @@ public class Controller{
     }
 
     public void playCard1(){
-        if(game.getCanPlay()==true)game.play(0);
-
+        if(game.getCanPlay()==true)game.cardCheck(0);
     }
 
     public void playCard2() {
-        if(game.getCanPlay()==true)game.play(1);
+        if(game.getCanPlay()==true)game.cardCheck(1);
     }
 
     public void playCard3() {
-        if(game.getCanPlay()==true)game.play(2);
+        if(game.getCanPlay()==true)game.cardCheck(2);
     }
 
     public void playCard4() {
-        if(game.getCanPlay()==true)game.play(3);
+        if(game.getCanPlay()==true)game.cardCheck(3);
     }
 
     public void playCard5() {
-        if(game.getCanPlay()==true)game.play(4);
+        if(game.getCanPlay()==true)game.cardCheck(4);
     }
 
-
-    public void playButton(){
-        game.getPlayedCard().add(game.player2.play());
-        game.player2.setPlayer_turn(true);
-        game.player.setPlayer_turn(false);
-        game.updateGUI();
-
-    }
+    /*public void closeDeck() {
+        if(game.getCanPlay()==true)game.deck.setDeckClosed(true))
+    }*/
 
 
     public ImageView getComputer_card1() {

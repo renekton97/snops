@@ -9,8 +9,9 @@ import java.util.Random;
 
 public class Game{
 
-    Player player;//our player
-    Computer player2;//computer player, for now just returns random card
+    //Player player;//our player
+    Computer comp;//computer player, for now just returns random card
+    Player[] player=new Player[2];
     Deck deck;
     Controller controller;//GUI
     ArrayList<Card> playedCard=new ArrayList<>();//cards that are on table and are currently player
@@ -18,11 +19,14 @@ public class Game{
     Boolean canPlay=false;
     PauseTransition pause;
     int player1GamePoints,player2GamePoints;
+    final int MAX_POINTS=66;
+    int round=0;
 
 
     public Game(Controller controller) {
-        player=new Player();
-        player2=new Computer();
+        player[0]=new Player();
+        player[1]=new Player();
+        comp=new Computer(player[1]);
         deck=new Deck();
         pause=new PauseTransition(Duration.seconds(3));
         this.controller = controller;
@@ -30,32 +34,37 @@ public class Game{
 
 
     public void start(){
-
-        deck.getDeckOfCards().clear();//clears deck if there is new round
-        player.getHandCards().clear();//clears deck if there is new round
-        player2.getHandCards().clear();//clears deck if there is new round
-        player.getDeckCards().clear();//clears deck if there is new round
-        player2.getDeckCards().clear();//clears deck if there is new round
-        player.setPoints(0);
-        player2.setPoints(0);
+        if(round>0)reset();
+        round++;
         deck.populate();
         deck.shuffle();
         firstDeal();
         System.out.println("Deck size: "+deck.getDeckOfCards().size());
         playedCard.clear();
-        player.setPoints(0);
+        player[0].setPoints(0);
 
-        getPlayedCard().add(player2.play());
-        player2.setPlayer_turn(true);
-        player.setPlayer_turn(false);
+        getPlayedCard().add(comp.play());
+        player[1].setPlayer_turn(true);
+        player[0].setPlayer_turn(false);
         updateGUI();
         canPlay=true;
+    }
+
+    public void reset(){//after new round resets cards/points/deck
+        if(deck.isDeckClosed()==true)deck.setDeckClosed(false);
+        deck.getDeckOfCards().clear();//clears deck if there is new round
+        player[0].getHandCards().clear();//clears deck if there is new round
+        player[1].getHandCards().clear();//clears deck if there is new round
+        player[0].getDeckCards().clear();//clears deck if there is new round
+        player[1].getDeckCards().clear();//clears deck if there is new round
+        player[0].setPoints(0);
+        player[1].setPoints(0);
     }
 
     public void firstDeal(){
         for(int i=0;i<5;i++){
             Card card=deck.deal();
-            player.addCard(card);
+            player[0].addCard(card);
         }
 
         trump=deck.deal();
@@ -63,38 +72,86 @@ public class Game{
 
         for(int i=0;i<5;i++){
             Card card=deck.deal();
-            player2.addCard(card);
+            player[1].addCard(card);
         }
     }
 
     public void cardDeal(){
         Card card;
-        if(!deck.deckOfCards.isEmpty()){
+        boolean empty;
+        empty=deck.deckOfCards.isEmpty();
+        System.out.println("IS EMPTY"+empty);
+        System.out.println("DECK CLOSED"+deck.isDeckClosed());
+        if(empty==false && deck.isDeckClosed()==false){//if deck is not empty and deck is not closed
             card = deck.deal();
-            player.addCard(card);
+            player[0].addCard(card);
             card = deck.deal();
-            player2.addCard(card);
+            player[1].addCard(card);
+        }else{System.out.println("CAN'T DEAL CARDS");}
+    }
+
+    public void cardCheck(int i){
+        System.out.println("it's my turn"+player[0].isPlayer_turn());
+
+        boolean closed;//is deck closed
+        boolean sameSuit=false;
+        boolean hasTrump;
+        boolean matchCard=false;
+
+        if(player[0].isPlayer_turn()==false) {
+
+            int s,t; //number of same suits or trumps
+            s=0;//suits number
+            t=0;//trumps number
+
+            for (Card card : player[0].getHandCards()) {//checks through every card
+                if (card.getSuit().getSuitText() == playedCard.get(0).getSuit().getSuitText()) s++;//if card that is checked has same suit as played card then count increases for one
+                if (card.getSuit().getSuitText() == trump.getSuit().getSuitText())t++;
+            }
+
+            if (s>0){//if count of same cards is bigger then 0 then player has same/matching card/s
+                sameSuit=true;
+                s=0;//when player have same suit and variable is set then count of same cards is reseted back to 0
+            }else{sameSuit=false;}
+
+            if (t>0){//if count of trumps is bigger then 0 then player has trump/s
+                hasTrump=true;
+                t=0;
+            }else{hasTrump=false;}
+
+            if(sameSuit==true || hasTrump==true){//if player either has same card or thrump he has matching card to play then
+                matchCard=true;
+            }else{matchCard=false;}
         }
+
+        if(deck.isDeckClosed()==true || deck.getDeckOfCards().size()==0){//checks if deck is closed or out of cards
+            closed=true;
+        }else{closed=false;}
+
+
+        if (player[0].isPlayer_turn()==false && closed==true && matchCard==true){//if player is not on turn and deck is closed or there is no more cards
+            System.out.println("Deck closed");
+            if(player[0].getHandCards().get(i).getSuit().getSuitText()==getPlayedCard().get(0).getSuit().getSuitText()){//if players card has same suit as first played card
+                play(i);
+            }else if(player[0].getHandCards().get(i).getSuit().getSuitText()==trump.getSuit().getSuitText() && sameSuit==false){//else if players card is trump
+                play(i);
+            }
+        }else{
+            play(i);
+        }
+
     }
 
     public void play(int i){
-        if(player.getPoints()<66 && player2.getPoints()<66){
-           if(player.getHandCards().size()>0 && player2.getHandCards().size()>0) playGame(i);
-            System.out.println("Player points:"+player.getPoints());
-            System.out.println("Player2 points:"+player2.getPoints());
-        }else{System.out.println("GAME OVER Bye bye");}
-    }
-
-    public void playGame(int i){
-        if(player.isPlayer_turn()==false) {
-            playedCard.add(player.takeCard(i));
-            canPlay=false;
+        if(player[0].isPlayer_turn()==false) {
+            playedCard.add(player[0].takeCard(i));//plays selected card from us
+            canPlay=false;//we can't select card anymore
             updateGUI();
             secondPlay();
         }else{
             System.out.println("SECOND");
-            playedCard.add(player.takeCard(i));
-            playedCard.add(player2.play());
+            playedCard.add(player[0].takeCard(i));
+            playedCard.add(comp.play());
             canPlay=false;
             updateGUI();
             secondPlay();
@@ -105,19 +162,19 @@ public class Game{
     public void secondPlay(){
         pause.setOnFinished(event -> {
             compareCards();
-            if(player.getPoints()>=20){
+            if(player[0].getPoints()>=MAX_POINTS || player[0].getHandCards().size()==0){//if we have enough points then game is over
                 System.out.println("ENOUGH POINTS");
-                addPlayerGamePoints();
+                addPoints(player[0],player[1]);
                 start();//restarts the game once player has enough cards
             }else{
-                cardDeal();
-                if (player2.isPlayer_turn() == true) {
-                    if (player2.getHandCards().size() > 0 && player2.getPoints()<66) {
-                        playedCard.add(player2.play());
-                        canPlay = true;
-                    } else {
+                cardDeal();//deal card
+                if (player[1].isPlayer_turn() == true) {// if it's computer turn
+                    if (player[1].getHandCards().size() > 0 && player[1].getPoints()<MAX_POINTS) {//if computer still has cards and not enough points
+                        playedCard.add(comp.play());//play random card for computer
+                        canPlay = true;//we can play after
+                    } else {//if player doesen't have anymore cards or has enough points
                         System.out.println("PLAYER 2 CAN'T PLAY");
-                        addPlayerGamePoints();
+                        addPoints(player[1],player[0]);
                         start();//restarts the game once player has enough cards
                     }
                 }
@@ -127,40 +184,37 @@ public class Game{
         pause.play();
     }
 
-    public void addPlayerGamePoints() {
-        int i=player.getGamePoints();
-        if (player2.getPoints() >= 33) {
+    public void addPoints(Player winner,Player loser) {
+        int i=winner.getGamePoints();
+
+        if (loser.getPoints() >= 33) {
            i = i + 1;
-        } else if (player2GamePoints < 33 && player2.getPoints() > 0) {
+        } else if (loser.getPoints() < 33 && loser.getPoints() > 0) {
             i = i + 2;
-        } else if (player2GamePoints == 0) {
+        } else if (loser.getPoints() == 0) {
             i = i + 3;
         }
-        player.setGamePoints(i);
-        controller.getPlayer_points().setText("Points "+player.getGamePoints());//Updates GUI with player points
-        if(player.getGamePoints()>=7){
-            player.setGamePoints(0);//if player has enough points, it reset game points back to 0
-            controller.getPlayer_points().setText("Points "+player.getGamePoints());//Updates GUI with player points
-            player.setGameWon(player.getGameWon()+1);//adds one game win
-            controller.getPlayer_win().setText("Win "+player.getGameWon());//Updates GUI with player wins
+        if(player[0].getPoints()<66 && player[1].getPoints()<66){//If neither of players have enough points, winners gets detirmed by last card played
+            if(player[0].isPlayer_turn()==true){//if user won last turn, he won the round
+                player[0].setGamePoints(1);
+            }else{
+                player[1].setGamePoints(1);
+            }
+        }
+        winner.setGamePoints(i);
+        if(player[0].getPoints()>=MAX_POINTS){
+            controller.getPlayer_points().setText("Points "+player[0].getGamePoints());//Updates GUI with player points
+        }else{controller.getPlayer2_points().setText("Points "+player[1].getGamePoints());}
+        if(winner.getGamePoints()>=7){
+            winner.setGamePoints(0);//if player has enough points, it reset game points back to 0
+            winner.setGameWon(player[0].getGameWon()+1);//adds one game win
+            controller.getPlayer_points().setText("Points "+player[0].getGamePoints());//Updates GUI with player points
+            controller.getPlayer_win().setText("Win "+player[0].getGameWon());//Updates GUI with player wins
+            controller.getPlayer2_points().setText("Points "+player[1].getGamePoints());//Updates GUI with player points
+            controller.getPlayer2_win().setText("Win "+player[1].getGameWon());//Updates GUI with player wins
         }
 
     }
-
-    public void addPlayer2GamePoints() {
-        if (player.getPoints() >= 33) {
-            player2GamePoints = player2GamePoints + 1;
-        } else if (player.getPoints() < 33 && player.getPoints() > 0) {
-            player2GamePoints = player2GamePoints + 2;
-        } else if (player.getPoints() == 0) {
-            player2GamePoints = player2GamePoints + 3;
-        }
-
-        if(player2.getGamePoints()>=7){
-            player2.setGameWon(player2.getGamePoints()+1);
-        }
-    }
-
 
     //Preveri katera karta je zmagovalna
     //Checks the winning card
@@ -179,9 +233,9 @@ public class Game{
         //2nd cards plays the player who is not on the turn and first card is played by the player
         if(cardTwoSuit==cardOneSuit && cardTwoRank>cardOneRank || cardTwoSuit==trumpSuit){
             //if second card won and player wasn't on turn he won, that means his card was winning
-            if(player.isPlayer_turn()==false){//if player was not on turn that means second card was his
+            if(player[0].isPlayer_turn()==false){//if player was not on turn that means second card was his
                 for(int i=0;i<2;i++) {
-                    player.addDeckCard(playedCard.get(i));
+                    player[0].addDeckCard(playedCard.get(i));
                 }
                 System.out.println("Player 1 wins");
                 playedCard.clear();
@@ -189,9 +243,9 @@ public class Game{
                 player2Turn=false;
                 canPlay=true;
             }
-            if(player2.isPlayer_turn()==false){
+            if(player[1].isPlayer_turn()==false){
                 for(int i=0;i<2;i++) {
-                    player2.addDeckCard(playedCard.get(i));
+                    player[1].addDeckCard(playedCard.get(i));
                     System.out.println("Player 2 wins");
                 }
                 playedCard.clear();
@@ -199,9 +253,9 @@ public class Game{
                 player2Turn=true;
             }
         }else{
-            if(player.isPlayer_turn()==true){//if second card didn't win and player was on turn and played first card,he wins
+            if(player[0].isPlayer_turn()==true){//if second card didn't win and player was on turn and played first card,he wins
                 for(int i=0;i<2;i++) {
-                    player.addDeckCard(playedCard.get(i));
+                    player[0].addDeckCard(playedCard.get(i));
                     System.out.println("Player 1 wins");
                     canPlay=true;
                 }
@@ -209,9 +263,9 @@ public class Game{
                 player1Turn=true;
                 player2Turn=false;
             }
-            if(player2.isPlayer_turn()==true){
+            if(player[1].isPlayer_turn()==true){
                 for(int i=0;i<2;i++) {
-                    player2.addDeckCard(playedCard.get(i));
+                    player[1].addDeckCard(playedCard.get(i));
                 }
                 System.out.println("Player 2 wins");
                 playedCard.clear();
@@ -219,47 +273,47 @@ public class Game{
                 player2Turn=true;
             }
         }
-        player.setPlayer_turn(player1Turn);
-        player2.setPlayer_turn(player2Turn);
+        player[0].setPlayer_turn(player1Turn);
+        player[1].setPlayer_turn(player2Turn);
 
-        System.out.println(player.deckCards.size());
-        System.out.println(player2.deckCards.size());
+        System.out.println(player[0].deckCards.size());
+        System.out.println(player[1].deckCards.size());
     }
 
     public synchronized void updateGUI(){
         //GUI interface to show player cards
-        if(player.getHandCards().size()>0){
-            controller.getPlayer_card1().setImage(new Image("/res/"+player.getHandCards().get(0).toString()+".png"));
+        if(player[0].getHandCards().size()>0){
+            controller.getPlayer_card1().setImage(new Image("/res/"+player[0].getHandCards().get(0).toString()+".png"));
             controller.getPlayer_card1().setVisible(true);
         }else{controller.getPlayer_card1().setVisible(false);}
-        if(player.getHandCards().size()>1){
-            controller.getPlayer_card2().setImage(new Image("/res/"+player.getHandCards().get(1).toString()+".png"));
+        if(player[0].getHandCards().size()>1){
+            controller.getPlayer_card2().setImage(new Image("/res/"+player[0].getHandCards().get(1).toString()+".png"));
             controller.getPlayer_card2().setVisible(true);
         }else{controller.getPlayer_card2().setVisible(false);}
-        if(player.getHandCards().size()>2){
-            controller.getPlayer_card3().setImage(new Image("/res/"+player.getHandCards().get(2).toString()+".png"));
+        if(player[0].getHandCards().size()>2){
+            controller.getPlayer_card3().setImage(new Image("/res/"+player[0].getHandCards().get(2).toString()+".png"));
             controller.getPlayer_card3().setVisible(true);
         }else{controller.getPlayer_card3().setVisible(false);}
-        if(player.getHandCards().size()>3){
-            controller.getPlayer_card4().setImage(new Image("/res/"+player.getHandCards().get(3).toString()+".png"));
+        if(player[0].getHandCards().size()>3){
+            controller.getPlayer_card4().setImage(new Image("/res/"+player[0].getHandCards().get(3).toString()+".png"));
             controller.getPlayer_card4().setVisible(true);
         }else{controller.getPlayer_card4().setVisible(false);}
-        if(player.getHandCards().size()>4){
-            controller.getPlayer_card5().setImage(new Image("/res/"+player.getHandCards().get(4).toString()+".png"));
+        if(player[0].getHandCards().size()>4){
+            controller.getPlayer_card5().setImage(new Image("/res/"+player[0].getHandCards().get(4).toString()+".png"));
             controller.getPlayer_card5().setVisible(true);
         }else{controller.getPlayer_card5().setVisible(false);}
 
         //Gui for enemies cards, shows cards based on his number
-        if(player2.handCards.size()<5)controller.getComputer_card5().setVisible(false);
-        if(player2.handCards.size()==5)controller.getComputer_card5().setVisible(true);
-        if(player2.handCards.size()<4)controller.getComputer_card4().setVisible(false);
-        if(player2.handCards.size()==4)controller.getComputer_card4().setVisible(true);
-        if(player2.handCards.size()<3)controller.getComputer_card3().setVisible(false);
-        if(player2.handCards.size()==3)controller.getComputer_card3().setVisible(true);
-        if(player2.handCards.size()<2)controller.getComputer_card2().setVisible(false);
-        if(player2.handCards.size()==2)controller.getComputer_card2().setVisible(true);
-        if(player2.handCards.size()<1)controller.getComputer_card1().setVisible(false);
-        if(player2.handCards.size()==1)controller.getComputer_card1().setVisible(true);
+        if(player[1].handCards.size()<5)controller.getComputer_card5().setVisible(false);
+        if(player[1].handCards.size()==5)controller.getComputer_card5().setVisible(true);
+        if(player[1].handCards.size()<4)controller.getComputer_card4().setVisible(false);
+        if(player[1].handCards.size()==4)controller.getComputer_card4().setVisible(true);
+        if(player[1].handCards.size()<3)controller.getComputer_card3().setVisible(false);
+        if(player[1].handCards.size()==3)controller.getComputer_card3().setVisible(true);
+        if(player[1].handCards.size()<2)controller.getComputer_card2().setVisible(false);
+        if(player[1].handCards.size()==2)controller.getComputer_card2().setVisible(true);
+        if(player[1].handCards.size()<1)controller.getComputer_card1().setVisible(false);
+        if(player[1].handCards.size()==1)controller.getComputer_card1().setVisible(true);
 
         //GUI for cards on the table, played cards...
         //updates playedCard
@@ -275,9 +329,19 @@ public class Game{
         if(!deck.deckOfCards.isEmpty()){
             controller.getTrump_card().setImage(new Image("/res/"+deck.deckOfCards.get(deck.getDeckOfCards().size()-1).toString()+".png"));
             controller.getTrump_card().setVisible(true);
+            controller.getDeck_of_cards().setVisible(true);
         }else{
             controller.getTrump_card().setVisible(false);
-            controller.getDeck_of_cards().setVisible(false);}
+            controller.getDeck_of_cards().setVisible(false);
+        }
+
+        if(player[0].isPlayer_turn()==true){
+            controller.getPlayer_label().setText("○ Player ");
+            controller.getPlayer2_label().setText("Player 2");
+        }else{
+            controller.getPlayer_label().setText("Player ");
+            controller.getPlayer2_label().setText("○ Player 2");
+        }
     }
 
     public ArrayList<Card> getPlayedCard() {
@@ -286,5 +350,9 @@ public class Game{
 
     public Boolean getCanPlay() {
         return canPlay;
+    }
+
+    public Card getTrump() {
+        return trump;
     }
 }

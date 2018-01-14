@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Deck {
 
     ArrayList<Card> deckOfCards=new ArrayList<>();
+    boolean deckClosed=true;
     Random random=new Random();
 
     public void populate(){
@@ -39,7 +40,13 @@ public class Deck {
         deckOfCards.add(card);
     };
 
+    public boolean isDeckClosed() {
+        return deckClosed;
+    }
 
+    public void setDeckClosed(boolean deckClosed) {
+        this.deckClosed = deckClosed;
+    }
 
     public ArrayList<Card> getDeckOfCards() {
         return deckOfCards;
